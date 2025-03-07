@@ -1,0 +1,33 @@
+detection:
+  model: "yolov8m.pt"  # Medium model for better accuracy
+  confidence: 0.35     # Balanced confidence threshold
+  classes:             # Focus primarily on people
+    person: 0
+    bicycle: 1
+    car: 2
+    motorcycle: 3
+    bus: 5
+    truck: 7
+
+analysis:
+  regions:             # Regions defined as percentages of frame
+    entrance:          
+      coordinates: [[10, 10], [10, 30], [30, 30], [30, 10]]  # Percentages of frame dimensions
+      max_count: 10    
+    cafeteria:
+      coordinates: [[40, 20], [40, 40], [60, 40], [60, 20]]
+      max_count: 30
+  
+alert:
+  enabled: true
+  cooldown: 60         # Seconds between alerts
+  methods:
+    console: true      # Print to console
+    log: true          # Write to log file
+  
+interface:
+  theme: "light"
+  update_interval: 1   # Seconds between UI updates
+
+database:
+  path: "data/monitoring.db"
