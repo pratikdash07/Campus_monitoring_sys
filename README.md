@@ -13,41 +13,6 @@ A computer vision-based system for monitoring and analyzing crowd density in cam
 - User-friendly web interface
 - Batch processing capabilities
 
-## Project Structure
-
-campus_monitoring_system/
-├── data/ # Data directory
-│ ├── config/ # Configuration files
-│ │ └── config.yaml # Main configuration
-│ ├── videos/ # Video storage
-│ └── images/ # Image storage
-│
-├── logs/ # Log files directory
-│
-├── output/ # Output directory for processed files
-│
-├── src/ # Source code
-│ ├── detection/ # Detection module
-│ │ └── detector.py # YOLOv8 detector
-│ ├── analysis/ # Analysis module
-│ │ └── analyzer.py # Region analyzer
-│ ├── alert/ # Alert module
-│ │ └── alerter.py # Alert manager
-│ ├── database/ # Database module
-│ │ └── db_manager.py # Database manager
-│ ├── interface/ # Interface module
-│ │ └── app.py # Streamlit interface
-│ └── utils/ # Utilities
-│ └── config_loader.py # Configuration loader
-│
-├── main.py # Main application script
-├── run.py # Launcher script
-├── setup.py # Setup script
-├── process_local_files.py # Local file processor
-├── requirements.txt # Project dependencies
-└── README.md # Project documentation
-
-text
 
 ## Requirements
 
