@@ -30,24 +30,17 @@ A computer vision-based system for monitoring and analyzing crowd density in cam
 git clone https://github.com/yourusername/campus_monitoring_system.git
 cd campus_monitoring_system
 
-text
-
 2. Create a virtual environment:
 python -m venv venv
 venv\Scripts\activate # On Windows
 source venv/bin/activate # On macOS/Linux
 
-text
-
 3. Install dependencies:
 pip install -r requirements.txt
-
-text
 
 4. Run the setup script:
 python setup.py
 
-text
 
 ## Usage
 
@@ -56,41 +49,33 @@ text
 Launch the Streamlit web interface:
 python run.py --mode ui
 
-text
 
 ### Command Line
 
 Process a video file:
 python run.py --mode cli --source path/to/video.mp4
 
-text
 
 Process an image:
 python run.py --mode cli --source path/to/image.jpg --image
 
-text
 
 Process all videos in a directory:
 python run.py --mode cli --source path/to/directory --batch
 
-text
 
 ### Local File Processing
 
 To process all images and videos in the data directories:
 python process_local_files.py
 
-text
-
 To process only images:
 python process_local_files.py --type images
 
-text
 
 To process only videos:
 python process_local_files.py --type videos
 
-text
 
 ## Configuration
 
@@ -122,8 +107,6 @@ cooldown: 60 # Seconds between alerts
 methods:
 console: true # Print to console
 log: true # Write to log file
-
-text
 
 ## Implementation Details
 
