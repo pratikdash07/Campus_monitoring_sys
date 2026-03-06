@@ -16,32 +16,29 @@ def process_image(image_path, detector, analyzer, alerter, db_manager):
     """Process a single image file"""
     print(f"Processing image: {image_path}")
     
-    # Read image
     image = cv2.imread(image_path)
     if image is None:
         print(f"Error: Could not read image {image_path}")
         return
     
-    # Detect objects
     detections, detection_frame = detector.detect(image)
     
-    # Analyze detections
+
     analysis_results, analysis_frame = analyzer.analyze(detections, detection_frame)
     
-    # Check for alerts
+
     alerts = alerter.check_and_alert(analysis_results)
     
-    # Save to database
+
     db_manager.save_detection(analysis_results, detections, os.path.basename(image_path))
     if alerts:
         db_manager.save_alerts(alerts, os.path.basename(image_path))
     
-    # Display results
     print(f"Total people detected: {analysis_results['total_people']}")
     for region, count in analysis_results['counts'].items():
         print(f"Region '{region}': {count} people")
     
-    # Save output image
+    # Saving output image
     output_dir = "output"
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, f"processed_{os.path.basename(image_path)}")
@@ -54,13 +51,11 @@ def process_video(video_path, detector, analyzer, alerter, db_manager):
     """Process a video file"""
     print(f"Processing video: {video_path}")
     
-    # Open video
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
         print(f"Error: Could not open video {video_path}")
         return
     
-    # Get video properties
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -73,10 +68,10 @@ def process_video(video_path, detector, analyzer, alerter, db_manager):
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
     
-    # Process frames
+    # Processing each  frame 
     frame_count = 0
     people_counts = []
-    process_every_n_frames = 5  # Process every 5th frame to speed up
+    process_every_n_frames = 5
     
     print(f"Total frames: {total_frames}")
     start_time = time.time()
@@ -100,19 +95,15 @@ def process_video(video_path, detector, analyzer, alerter, db_manager):
             # Check for alerts
             alerts = alerter.check_and_alert(analysis_results)
             
-            # Save to database (only save every 30th processed frame to avoid database bloat)
             if frame_count % (process_every_n_frames * 30) == 0:
                 db_manager.save_detection(analysis_results, detections, os.path.basename(video_path))
                 if alerts:
                     db_manager.save_alerts(alerts, os.path.basename(video_path))
             
-            # Store people count
             people_counts.append(analysis_results['total_people'])
             
-            # Write frame to output video
             out.write(analysis_frame)
-            
-            # Print progress
+
             if frame_count % (process_every_n_frames * 20) == 0:
                 elapsed_time = time.time() - start_time
                 frames_processed = frame_count // process_every_n_frames
@@ -120,7 +111,6 @@ def process_video(video_path, detector, analyzer, alerter, db_manager):
                 progress = (frame_count / total_frames) * 100
                 print(f"Progress: {progress:.1f}% ({frame_count}/{total_frames}) - Processing speed: {fps_processing:.2f} fps")
         else:
-            # Write original frame to output video
             out.write(frame)
     
     # Clean up
@@ -150,7 +140,7 @@ def process_directory(directory, detector, analyzer, alerter, db_manager, file_t
     """Process all images or videos in a directory"""
     if file_type == "image":
         extensions = ['.jpg', '.jpeg', '.png', '.bmp']
-    else:  # video
+    else:  # for video
         extensions = ['.mp4', '.avi', '.mov', '.mkv']
     
     files = [os.path.join(directory, f) for f in os.listdir(directory) 
@@ -168,7 +158,7 @@ def process_directory(directory, detector, analyzer, alerter, db_manager, file_t
         
         if file_type == "image":
             process_image(file_path, detector, analyzer, alerter, db_manager)
-        else:  # video
+        else:  
             process_video(file_path, detector, analyzer, alerter, db_manager)
 
 def main():
@@ -182,17 +172,16 @@ def main():
     
     # Load configuration
     config = load_config(args.config)
-    
-    # Initialize components
+
     detector = ObjectDetector(config)
     analyzer = RegionAnalyzer(config)
     alerter = AlertManager(config)
     db_manager = DatabaseManager(config)
     
-    # Process based on source type
+    
     source = args.source
     
-    # Check if source is a webcam
+    #webcam for real time analysis
     if source.isdigit():
         source = int(source)
         print(f"Opening webcam {source}")
@@ -211,23 +200,20 @@ def main():
                 print("Error reading from webcam")
                 break
             
-            # Detect objects
+        
             detections, detection_frame = detector.detect(frame)
             
-            # Analyze detections
+        
             analysis_results, analysis_frame = analyzer.analyze(detections, detection_frame)
             
-            # Check for alerts
             alerter.check_and_alert(analysis_results)
             
-            # Display results
             cv2.imshow('Campus Monitoring', analysis_frame)
             
-            # Break loop on 'q' key
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         
-        # Clean up
+        
         cap.release()
         cv2.destroyAllWindows()
     
@@ -236,7 +222,6 @@ def main():
         process_directory(source, detector, analyzer, alerter, db_manager, 
                          "image" if args.image else "video")
     
-    # Process single file
     elif os.path.isfile(source):
         if args.image or source.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
             process_image(source, detector, analyzer, alerter, db_manager)

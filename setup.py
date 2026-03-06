@@ -1,4 +1,4 @@
-# Add this at the top of your setup.py
+
 import sys
 print(f"Python path: {sys.executable}")
 print(f"sys.path: {sys.path}")
